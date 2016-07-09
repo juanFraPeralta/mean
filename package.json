@@ -1,0 +1,22 @@
+{
+  "name": "mean",
+  "version": "1.0.0",
+  "description": "Mean Application",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/juanFraPeralta/mean.git"
+  },
+  "author": "Juan Peralta",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/juanFraPeralta/mean/issues"
+  },
+  "homepage": "https://github.com/juanFraPeralta/mean#readme",
+  "dependencies": {
+    "express": "^4.14.0"
+  }
+}
