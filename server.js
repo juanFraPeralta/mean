@@ -26,8 +26,8 @@ app.use(function(req, res, next){
 app.use(morgan('dev'));
 
 //DB connections
-mongoose.connect('mongodb://localhost/pokemon');
-//mongoose.connect('mongodb://admin:123@ds017553.mlab.com:17553/pokemon_juanfraperalta');
+//mongoose.connect('mongodb://localhost/pokemon');
+mongoose.connect('mongodb://admin:123@ds017553.mlab.com:17553/pokemon_juanfraperalta');
 //console.log(mongoose);
 
 //API ROUTES
