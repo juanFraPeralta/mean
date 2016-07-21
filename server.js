@@ -8,6 +8,8 @@ var path = require('path');
 var bodyParser = require('body-parser');
 var morgan = require('morgan');
 var User =  require('./models/user');
+var Pokemon =  require('./models/pokemon');
+
 var port = process.env.PORT || 5000;
 
 //APP CONFIGURATION
@@ -78,6 +80,142 @@ apiRouter.route('/users')
 apiRouter.get('/', function(req, res){
 	res.json({ message:'Stop to try hit me and hit me!' });
 });
+
+apiRouter.route('/users/:user_id')
+.get(function(req, res){
+	User.findById(req.params.user_id, function(err, user){
+		if(err) return res.send(err);
+		res.json(user);
+	});
+})
+.put(function(req, res){
+	User.findById(req.params.user_id, function(err, user){
+		if(err) return res.send(err);
+			if(req.body.name) user.name = req.body.name;
+			if(req.body.username) user.username = req.body.username;
+			if(req.body.password) user.password = req.body.password;
+
+			user.save(function(err){
+				if(err) return res.send(err);
+				res.json({message:'Usuario Actualizado'})
+			});
+	});
+})
+.delete(function(req, res){
+	User.remove({
+		_id:req.params.user_id
+	}, function(err,user){
+		if(err) return res.send(err);
+		res.json({message:'Usuario eliminado'})
+	});
+})
+
+apiRouter.route('/users/name/:name')
+.get(function(req, res){
+	User.findOne(req.params.name, function(err, user){
+		if(err) return res.send(err);
+		res.json(user);
+	});
+})
+
+//Routes /pokemons
+apiRouter.route('/pokemons')
+//create a pokemon througth POST
+//URL: http://localhost:5000/api/pokemons
+.post(function(req, res){
+	var pokemon = new Pokemon();
+	pokemon.type = req.body.type;
+	pokemon.name = req.body.name;
+	pokemon.owner = req.body.owner;
+	pokemon.save(function(err){
+		if(err){
+			//verify duplicate entry on pokemonname
+			if(err.code == 11000){
+				console.log(err);
+				return res.json({ success: false, message: 'El nombre es duplicado'});
+			}
+		}
+		res.json({ message: 'El pokemon se ha creado'});
+	});
+})
+//get all pokemons througth GET
+//URL: http://localhost:5000/api/pokemons
+.get(function(req, res){
+	// Pokemon.find(function(err, pokemons){
+	// 	if(err) return res.send(err);
+	// 	res.json(pokemons);
+	// });
+	Pokemon.find({}, function(err, pokemons){
+		User.populate(pokemons, {
+			path: 'owner',
+			select: {name:1}, //, username:1
+			match: {name: 'juan'}
+		}, function(err, pokemons){
+			res.status(200).send(pokemons);
+
+		})
+	})//.skip(2).limit(1)
+	//.sort({name: -1})
+	.select({name:1, type:1, owner:1})
+});
+
+apiRouter.route('/pokemons/:pokemon_id')
+.get(function(req, res){
+	Pokemon.findById(req.params.pokemon_id, function(err, pokemon){
+		if(err) return res.send(err);
+		// Pokemon.save(function(err){
+		// 	if(err) return res.send(err);
+		// 	res.json({message:'Pokemon Actualizado Count'});
+		// });
+		res.json(pokemon);
+	});
+})
+.put(function(req, res){
+	Pokemon.findById(req.params.pokemon_id, function(err, pokemon){
+		if(err) return res.send(err);
+			if(req.body.name) pokemon.name = req.body.name;
+			if(req.body.type) pokemon.type = req.body.type;
+			if(req.body.owner) pokemon.owner = req.body.owner;
+			pokemon.save(function(err){
+				if(err) return res.send(err);
+				res.json({message:'Pokemon Actualizado'})
+			});
+	});
+})
+.delete(function(req, res){
+	Pokemon.remove({
+		_id:req.params.pokemon_id
+	}, function(err,pokemon){
+		if(err) return res.send(err);
+		res.json({message:'Pokemon eliminado'})
+	});
+})
+
+apiRouter.route('/pokemons/name/:name')
+.get(function(req, res){
+	Pokemon.findOne(req.params.name, function(err, pokemon){
+		if(err) return res.send(err);
+		res.json(pokemon.sayHi());
+	});
+})
+
+apiRouter.route('/pokemons/type/:type')
+.get(function(req, res){
+	Pokemon.find({
+		type: new RegExp(req.params.type, 'i'),
+		//name: /ju/i,
+		// count: {
+		// 	$gt:0,
+		// 	$lt:2
+		// }
+		// name:{
+		// 	$in: ['pika']
+		// }
+	}, function(err, pokemons){
+		res.json(pokemons);
+	});
+
+})
 
 //Register our routes
 app.use('/api', apiRouter);
