@@ -6,10 +6,12 @@ var path = require('path');
 // var adminRouter = express.Router();
 // var loginRouter = express.Router();
 var bodyParser = require('body-parser');
+var jwt = require('jsonwebtoken');
 var morgan = require('morgan');
 var User =  require('./models/user');
 var Pokemon =  require('./models/pokemon');
 
+var superSecret = 'strangeThings';
 var port = process.env.PORT || 5000;
 
 //APP CONFIGURATION
@@ -42,9 +44,94 @@ app.get('/', function(req, res){
 var apiRouter = express.Router();
 
 //Accesed at GET http://localhost:5000/api
-apiRouter.get('/', function(req, res){
-	res.json({ message:'Stop to try hit me and hit me!' });
+// apiRouter.get('/', function(req, res){
+// 	res.json({ message:'Stop to try hit me and hit me!' });
+// });
+
+apiRouter.post('/authenticate', function(req, res){
+	User.findOne({
+		username : req.body.username
+	})
+	.select('name username password')
+	.exec(function(err, user){
+		if(err) throw err;
+
+		//Username was not found
+		if(!user){
+			res.json({
+				success: false,
+				message: 'La autenticacion ha fallado. El usuario NO existe'
+			});
+		}else if(user){
+			//Validate if password matches
+			var validPassword = user.comparePassword(req.body.password);
+			if(!validPassword){
+				res.json({
+					success: false,
+					message: 'La autenticacion ha fallado. Contrasenia incorrecta'
+				});
+			}else {
+				//If authenticate process is OK then
+				//generate a token
+				var token = jwt.sign({
+					name: user.name,
+					username: user.username,
+				}, superSecret, {
+					expiresIn: '24h'
+				})
+				res.json({
+					success: true,
+					message: 'Acceso Authorization',
+					token: token
+				});
+			}
+		}
+	});
 });
+
+//Middleware to verify a token
+apiRouter.use(function(req, res, next){
+	console.log('Middleware to verify a token');
+	var token = req.body.token || req.query.token || req.headers['x-access-token'];
+	if(token){
+		//verify token
+		jwt.verify(token, superSecret, function(err, decoded){
+			if(err){
+				return res.json({
+					success: false,
+					message: 'Fallo la autenticacion del token'
+				})
+			}else{
+				console.log(decoded);
+				req.decoded = decoded;
+				next();
+			}
+		})
+	}else {
+		return res.status(403).send({
+			success: false,
+			message: 'no puedes entrar bitch: 403'
+		});
+
+	}
+//	next();
+});
+
+apiRouter.get('/', function(req, res){
+	res.json({
+		message: 'Welcome'
+	});
+});
+
+apiRouter.get('/me', function(req, res){
+
+	res.json({
+		message: 'Welcome ' + req.decoded.name
+	});
+
+
+});
+
 
 //Routes /users
 apiRouter.route('/users')
@@ -77,9 +164,9 @@ apiRouter.route('/users')
 })
 ;
 
-apiRouter.get('/', function(req, res){
-	res.json({ message:'Stop to try hit me and hit me!' });
-});
+// apiRouter.get('/', function(req, res){
+// 	res.json({ message:'Stop to try hit me and hit me!' });
+// });
 
 apiRouter.route('/users/:user_id')
 .get(function(req, res){
