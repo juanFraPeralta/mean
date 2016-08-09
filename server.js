@@ -31,14 +31,14 @@ app.use(morgan('dev'));
 
 //DB connections
 //mongoose.connect('mongodb://localhost/pokemon');
-mongoose.connect('mongodb://admin:123@ds017553.mlab.com:17553/pokemon_juanfraperalta');
+//mongoose.connect('mongodb://admin:123@ds017553.mlab.com:17553/pokemon_juanfraperalta');
 //console.log(mongoose);
 
 //API ROUTES
 //Main/basic route
-app.get('/', function(req, res){
-	res.send('Welcome ot the real world!')
-});
+//app.get('/', function(req, res){
+//	res.send('Welcome ot the real world!')
+//});
 
 //Express router instance
 var apiRouter = express.Router();
@@ -305,8 +305,8 @@ apiRouter.route('/pokemons/type/:type')
 })
 
 //Register our routes
-app.use('/api', apiRouter);
-app.listen(port);
+//app.use('/api', apiRouter);
+//app.listen(port);
 
 //
 // app.get('/', function(request, response){
@@ -393,4 +393,12 @@ app.listen(port);
 //
 // app.set('port',(process.env.PORT || 5000));
 // app.listen(app.get('port'));
+
+
+app.use('/api', apiRouter);
+app.use(express.static(__dirname + '/public'))
+app.get('*', function(req, res){
+	res.sendFile(path.join(__dirname + '/public/views/index.html'))
+});
+app.listen(port);
 console.log('Here we go!' + port);
