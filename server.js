@@ -1,11 +1,12 @@
 //Call the packages
-var express = require('express');
-var app = express();
-var bodyParser = require('body-parser');
-var morgan = require('morgan');
-var mongoose = require('mongoose');
-var config = require('./config');
-var path = require('path');
+var express     = require('express');
+var app         = express();
+var bodyParser  = require('body-parser');
+var morgan      = require('morgan');
+var mongoose    = require('mongoose');
+var config      = require('./config');
+var path        = require('path');
+
 
 // APP CONFIGURATION
 app.use(bodyParser.urlencoded({
@@ -25,22 +26,21 @@ app.use(function(req, res, next) {
 //Loggin all request to the console
 app.use(morgan('dev'));
 
-//DB conecction
+//Connect to our database
 mongoose.connect(config.database);
 
-//set static files location for front end (angular files)
+
+// set static files location for front end (Angular files)
 app.use(express.static(__dirname + '/public'));
 
-//Main catchall route----------
-//send user to front end
-app.get('*', function(req, res){
-  res.sendFile(path.join(__dirname + '/public/views/index.html'));
-});
-
 var apiRoutes = require('./app/routes/api')(app, express);
-//register our route
 app.use('/api', apiRoutes);
 
-app.listen(config.port);
+//Main catchall route
+//Send user to front end
+app.get('*', function(req, res) {
+    res.sendFile(path.join(__dirname + '/public/views/index.html'));
+})
 
+app.listen(config.port);
 console.log('Neo comes over port ' + config.port);

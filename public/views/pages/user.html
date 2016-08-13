@@ -1,6 +1,64 @@
-<div>
-  <h1>User page</h1>
-  <p>
-    {{ user.message }}
-  </p>
+<div flex-item="6">
+    <span class="fs-title display-block mb">Usuarios</span>
+
+    <div class="divider divider--dark"></div>
+
+    <ul class="list mt++">
+        <li class="list-row" ng-repeat="trainer in user.users">
+
+            <div class="list-row__content">
+                <span class="display-block">{{trainer.name}}</span>
+                <span class="display-block fs-body-1 tc-black-2">{{trainer.username}}</span>
+            </div>
+            <div class="list-row__secondary">
+                <lx-icon lx-id="information" lx-size="xs" lx-color="grey" lx-type="flat"></lx-icon>
+                <lx-button lx-type="raised" lx-size="m" ng-click="user.GetUser(trainer._id)">Get</lx-button>
+                <lx-button lx-type="raised" lx-size="m" ng-click="user.DeleteUser(trainer._id)">Delete</lx-button>
+            </div>
+            <div class="divider divider--dark"></div>
+        </li>
+    </ul>
+
+    <div class="divider divider--dark"></div>
+
+    <div class="p+" flex-container="row" flex-gutter="24">
+  <form>
+        <lx-text-field lx-label="Name" lx-fixed-label="true" lx-icon="account">
+            <input type="text" ng-model="user.name">
+        </lx-text-field>
+        <lx-text-field lx-label="Username" lx-fixed-label="true" lx-icon="account">
+            <input type="text" ng-model="user.username">
+        </lx-text-field>
+        <lx-text-field lx-label="Password" lx-fixed-label="true" lx-icon="account">
+            <input type="text" ng-model="user.password">
+        </lx-text-field>
+        <lx-button lx-type="raised" ng-click="user.CreateUser(user)">Create User</lx-button>
+        <span>{{user.createMessage}}</span>
+        <!-- ng-click="user.CreateUser(params)" -->
+        <!-- <lx-button lx-type="raised" ng-click="User.create();">Add User</lx-button> -->
+  </form>
+  <form>
+    <!-- <input type="text" ng-model="params.name"> -->
+        <lx-text-field lx-label="Id" lx-fixed-label="false" lx-icon="account">
+            <input type="text" ng-model="user._id" text="sdfsdfsdf">
+        </lx-text-field>
+        <lx-text-field lx-label="Name" lx-fixed-label="true" lx-icon="account">
+            <input type="text" ng-model="user.name">
+        </lx-text-field>
+        <lx-text-field lx-label="Username" lx-fixed-label="true" lx-icon="account">
+            <input type="text" ng-model="user.username">
+        </lx-text-field>
+        <lx-text-field lx-label="Password" lx-fixed-label="true" lx-icon="account">
+            <input type="text" ng-model="user.password">
+        </lx-text-field>
+        <lx-button lx-type="raised" ng-click="user.UpdateUser(user)">Update</lx-button>
+        <span>{{user.createMessage}}</span>
+        <!-- ng-click="user.CreateUser(params)" -->
+        <!-- <lx-button lx-type="raised" ng-click="User.create();">Add User</lx-button> -->
+  </form>
+
+    </div>
+
+
+
 </div>

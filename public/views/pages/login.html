@@ -3,7 +3,20 @@
   <p>
     {{ login.message }}
   </p>
-  <div class="p+">
+
+  <form>
+    <lx-text-field lx-label="User" lx-fixed-label="false" lx-icon="account">
+      <input type="text" ng-model="login.username">
+    </lx-text-field>
+    <lx-text-field lx-label="Password" lx-fixed-label="false" lx-icon="account">
+      <input type="text" ng-model="login.password">
+    </lx-text-field>
+        <lx-button lx-type="raised" ng-click="login.login(login)">Login</lx-button>
+        <lx-button lx-type="raised" ng-click="login.logout()">Logout</lx-button>
+
+  </form>
+
+  <!-- <div class="p+">
     <lx-button lx-type="raised">Button</lx-button>
-</div>
+  </div> -->
 </div>

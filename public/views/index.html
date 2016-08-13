@@ -18,10 +18,19 @@
 
     <script src="bower_components/lumx/dist/lumx.js"></script>
 
+    <!-- controllers -->
+    	<script src="js/controllers/mainCtrl.js"></script>
+    	<script src="js/controllers/loginCtrl.js"></script>
+    	<script src="js/controllers/userCtrl.js"></script>
+    	<script src="js/controllers/pokemonCtrl.js"></script>
+
+    	<!-- services -->
+    	<script src="js/services/authService.js"></script>
+    	<script src="js/services/userService.js"></script>
+    	<script src="js/services/pokemonService.js"></script>
+
+
     <script type="text/javascript" src="js/app.routes.js"></script>
-    <script type="text/javascript" src="js/app.controllers.js"></script>
-    <script type="text/javascript" src="js/app.services.js"></script>
-    <script type="text/javascript" src="js/app.directives.js"></script>
     <script type="text/javascript" src="js/app.js"></script>
 </head>
 
@@ -29,7 +38,7 @@
     <div class="p+">
         <div class="card">
             <div class="card__actions" ng-controller="mainCtrl as main">
-                <lx-button lx-color="orange" lx-type="flat" ng-click="main.goTo('/users')">Usuarios</lx-button>
+                <lx-button lx-color="orange" lx-type="flat" ng-click="main.goTo('/users')" ng-if="main.loggedIn">Usuarios</lx-button>
                 <lx-button lx-color="orange" lx-type="flat" ng-click="main.goTo('/pokemons')">Pokemons</lx-button>
             </div>
             <div flex-container="row">
